@@ -187,9 +187,7 @@ class Bot:
 
     def default(self, callback):
         """
-        Set callback for default command that is called on unrecognized
-        commands for 1-to-1 chats
-
+        Set callback for default command that is called on unrecognized commands
         :Example:
 
         >>> @bot.default
@@ -531,10 +529,9 @@ class Bot:
                 self.track(message, handler.__name__)
                 return handler(chat, m)
 
-        # No match, run default if it's a 1to1 chat
-        if not chat.is_group():
-            self.track(message, "default")
-            return self._default(chat, message)
+        # No match, run default
+        self.track(message, "default")
+        return self._default(chat, message)
 
     def _process_inline_query(self, query):
         iq = InlineQuery(self, query)
@@ -553,8 +550,7 @@ class Bot:
             if match:
                 return handler(chat, cq, match)
 
-        if not chat.is_group():
-            return self._default_callback(chat, cq)
+        return self._default_callback(chat, cq)
 
     def _process_updates(self, updates):
         if not updates["ok"]:
